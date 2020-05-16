@@ -10,8 +10,8 @@
 <body>
 <form action="{{url('user/store')}}" method="post">
 <table>
+    {{csrf_field()}}
     <tr>
-        {{csrf_field()}}
         <td>用户名</td>
         <td><input type="text" name="username"></td>
     </tr>

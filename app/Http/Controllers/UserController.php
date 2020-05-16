@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -21,10 +22,24 @@ class UserController extends Controller
 
         $input = $request->except('_token');
         $input['password'] = md5($request->input('password'));
-        dd($input);
 
         //表单验证
-        
 
+        //添加操作
+//        User::create(['username'=>$input['username'],'password'=>$input['password']]);
+        $res = User::create($input);
+
+        if($res)
+        {
+            return  redirect('user/index');
+        }else{
+            return back();
+        }
+    }
+
+    public function index()
+    {
+        $user = User::get();
+        return view('user.list',['user'=>$user]);
     }
 }

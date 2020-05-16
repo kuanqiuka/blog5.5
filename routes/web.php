@@ -20,3 +20,8 @@ Route::get('user/add','UserController@add');
 
 //用户执行添加操作路由
 Route::post('user/store','UserController@store');
+
+//用户列表页路由
+Route::get('user/index',"UserController@index");
+
+
