@@ -24,4 +24,26 @@ Route::post('user/store','UserController@store');
 //用户列表页路由
 Route::get('user/index',"UserController@index");
 
+//用户修改路由
+Route::get('user/edit/{id}','UserController@edit');
+
+//用户更新路由
+Route::post('user/update','UserController@update');
+
+//用户删除路由
+Route::get('/user/del/{id}','UserController@destroy');
+
+//后台登录的路由
+Route::get('admin/login','Admin\LoginController@login');
+
+//验证码路由
+Route::get('admin/code','Admin\LoginController@code');
+
+Route::get('/code/captcha/{tmp}', 'Admin\LoginController@captcha');
+
+Route::post('admin/doLogin','Admin\LoginController@doLogin');
+
+
+
+
 
