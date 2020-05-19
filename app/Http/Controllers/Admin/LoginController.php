@@ -68,5 +68,12 @@ class LoginController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
+
+        //3.验证用户的存在
+
+        //4.存到session中
+
+        //5.跳转到后台首页
+
     }
 }
