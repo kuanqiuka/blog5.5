@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Model\User;
 use App\Org\code\Code;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
@@ -69,11 +72,61 @@ class LoginController extends Controller
                 ->withInput();
         }
 
-        //3.验证用户的存在
+        //验证码
+        if(strtolower($input['code']) != strtolower(session()->get('code'))){
+            return redirect('admin/login')->with('errors','验证码错误');
+        }
 
-        //4.存到session中
+        //3.验证用户的存在
+        $user = User::where('user_name',$input['username'])->first();
+
+        if(!$user){
+            return redirect('admin/login')->with('errors','用户名为空');
+        }
+
+        if($input['password'] != Crypt::decrypt($user->user_pass)){
+            return redirect('admin/login')->with('errors','密码错误');
+        }
+
+        //4.保存用户信息到session中
+        session()->put('user',$user);
 
         //5.跳转到后台首页
+        return redirect('admin/index');
+    }
 
+    public function jiami()
+    {
+        //1.md5加密，生成32位的字符串，字串一一对应.给密码加个盐值
+//        $str = 'salt'.'123456';
+//        return md5($str);
+
+        //2.哈希加密,生成65位字符串，每次刷新都不一样
+//        $str = '123456';
+//        $hash = Hash::make($str);
+//        Hash::check('要验证的表单密码','数据库中取出的密码')；
+//        if(Hash::check($str,$hash)){
+//            return "密码正确";
+//        }else{
+//            return '密码错误';
+//        }
+
+        //3.crypt加密,生成255位字符串
+        $str = '123456';
+        $encrypt_str = 'eyJpdiI6Ik4zem1tWVBcLzJRMGZtcGtSWmRvdGtnPT0iLCJ2YWx1ZSI6IkZwQXMxb0FXR21qSEEzMDNWbEt1QXc9PSIsIm1hYyI6Ijk3YjJiYTExYTNkOTJhNjljNjc5ODQzOTY0YjQ2YjcwZjZiY2Q0ODcyMjJiOTIwMmFlZDFkODZjYmU0ZmZjYjUifQ';
+//        return Crypt::encrypt($str);
+        if(Crypt::decrypt($encrypt_str)==$str){
+            return '密码正确';
+        }
+    }
+
+    public function index()
+    {
+        return view('admin.index');
+    }
+
+    public function welcome()
+    {
+        return view('admin.welcome');
     }
 }
